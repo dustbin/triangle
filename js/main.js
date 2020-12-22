@@ -1,5 +1,4 @@
 let camera, scene, renderer;
-let geometry, material, mesh;
 
 function resize(){
 }
@@ -9,18 +8,20 @@ function render(){
 	renderer.render(scene, camera);
 }
 window.onload = function(){
-	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
-	camera.position.z = 1;
+	let width = window.innerWidth;
+	let height = window.innerHeight;
+	camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2);
 
 	scene = new THREE.Scene();
+	scene.background = new THREE.Color( 0xffffff );
 
-	geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-	material = new THREE.MeshNormalMaterial();
+	let triangle = new Triangle([100,100,0,0,100,0],1,0xffff00,.9);
 
-	mesh = new THREE.Mesh( geometry, material );
-	scene.add( mesh );
+	scene.add( triangle.mesh );
 
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
+
+	render()
 };

@@ -3,14 +3,7 @@
 #set -x
 
 function install {
-  if [ $EUID -ne 0 ]; then
-    echo "This script must be run using sudo"
-    exit
-  fi
-
   set -x
-
-  STATIC_DATA=/usr/share/nginx/triangle
 
   cp js/*.js $STATIC_DATA
   cp html/index.html $STATIC_DATA
@@ -24,9 +17,27 @@ function install {
   set +x
 }
 
+function update {
+  set -x
+
+  cp js/*.js $STATIC_DATA
+  cp html/index.html $STATIC_DATA
+
+  nginx -s reload
+  set +x
+}
+
 if [ $# -gt 0 ]; then
+  if [ $EUID -ne 0 ]; then
+    echo "This script must be run using sudo"
+    exit
+  fi
+  STATIC_DATA=/usr/share/nginx/triangle
   if [ ${1} = "install" ]; then
     install
+  fi
+  if [ ${1} = "update" ]; then
+    update
   fi
 else
   echo "usage ${0} [command]"
