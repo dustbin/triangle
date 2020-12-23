@@ -7,6 +7,7 @@ function install {
 
   cp js/*.js $STATIC_DATA
   cp html/index.html $STATIC_DATA
+  cp html/*.jpg $STATIC_DATA
 
   chown -R nginx: $STATIC_DATA
 
@@ -22,6 +23,7 @@ function update {
 
   cp js/*.js $STATIC_DATA
   cp html/index.html $STATIC_DATA
+  cp html/*.jpg $STATIC_DATA
 
   nginx -s reload
   set +x
