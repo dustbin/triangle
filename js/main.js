@@ -24,8 +24,12 @@ window.onload = function(){
 			image.translateX(image.width()*-1);
 			image.translateY(image.height()/-2);
 			image.translateZ(-1);
-			scene.add(image.mesh);
+			//scene.add(image.mesh);
 			image.buildWeights(renderer);
+			scene.add(image.meshWeights);
+			image.meshWeights.translateX(image.width()*-1);
+			image.meshWeights.translateY(image.height()/-2);
+			image.meshWeights.translateZ(-1);
 		}
 	);
 
