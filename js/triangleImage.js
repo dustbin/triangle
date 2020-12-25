@@ -4,4 +4,6 @@ class TriangleImage {
 		this.height = height;
 		this.triangles = [];
 	}
+	addTriangle(){
+	}
 }

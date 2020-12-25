@@ -1,5 +1,5 @@
 let camera, scene, renderer;
-let triangles = [];
+let triangleImage = [];
 let image;
 
 function resize(){
@@ -29,14 +29,10 @@ window.onload = function(){
 			image.meshWeights.translateX((image.width()+5)*1+5);
 			image.meshWeights.translateY((image.height()+5)*0+5);
 			scene.add(image.meshWeights);
-
-			triangles.push(Triangle.randomTriangle(0,image.width(),image.height()));
-			triangles[0].mesh.translateX((image.width()+5)*2+5);
-			scene.add( triangles[0].mesh );
-
-			triangles.push(Triangle.randomTriangle(1,image.width(),image.height()));
-			triangles[1].mesh.translateX((image.width()+5)*2+5);
-			scene.add( triangles[1].mesh );
+			
+			triangleImage.push(new TriangleImage(image.width(),image.height()));
+			triangleImage[0].addTriangle();
+			scene.add(triangleImage[0]);
 		}
 	);
 
