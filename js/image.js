@@ -1,22 +1,22 @@
 class Image {
-	constructor(texture){
+	constructor(texture,width=null,height=null){
 		this.texture = texture;
+		if(width){
+			this.width = width;
+		}else if(this.texture.image){
+			this.width = this.texture.image.width;
+		}else{
+			this.width = 0;
+		}
+		if(height){
+			this.height = height;
+		}else if(this.texture.image){
+			this.height = this.texture.image.height;
+		}else{
+			this.height = 0;
+		}
 		this.material = new THREE.MeshBasicMaterial({map: this.texture});
-		this.mesh = new THREE.Mesh( this.buildGeometry(), this.material );
-	}
-	width(){
-		if(this.texture.image){
-			return this.texture.image.width;
-		}else{
-			return 0;
-		}
-	}
-	height(){
-		if(this.texture.image){
-			return this.texture.image.height;
-		}else{
-			return 0;
-		}
+		this.mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), this.material );
 	}
 	translateX(x){
 		if(this.mesh){
@@ -33,16 +33,46 @@ class Image {
 			this.mesh.translateZ(z);
 		}
 	}
-	buildGeometry(){
+	buildWeights(renderer){
+		this.weights = Image.createTexture(Image.weightVS,Image.weightFS,this,renderer);
+	}
+	static createTexture(vShader,fShader,source,renderer){
+		let camera = new THREE.OrthographicCamera( 0, source.width, source.height, 0, -1, 1 );
+		let renderTarget = new THREE.WebGLRenderTarget(
+			source.width,
+			source.height,
+			{
+				format: THREE.RGBFormat,
+				depthBuffer: false
+			}
+		);
+		let material = new THREE.ShaderMaterial( {
+			uniforms: {
+				map: new THREE.Uniform(source.texture),
+				xpix: { value: 1/source.width },
+				ypix: { value: 1/source.height }
+			},
+			vertexShader: vShader,
+			fragmentShader: fShader
+		} );
+		let mesh = new THREE.Mesh( Image.buildGeometry(source.width,source.height), material );
+		let scene = new THREE.Scene();
+		scene.add(mesh);
+		renderer.setRenderTarget(renderTarget);
+		renderer.render(scene,camera);
+		renderer.setRenderTarget(null);
+		return new Image(renderTarget.texture,source.width,source.height);
+	}
+	static buildGeometry(width, height){
 		let geometry = new THREE.BufferGeometry();
 		let vertices = new Float32Array( [
 			0,0,0,
-			this.width(),0,0,
-			this.width(),this.height(),0,
+			width,0,0,
+			width,height,0,
 
 			0,0,0,
-			this.width(),this.height(),0,
-			0,this.height(),0
+			width,height,0,
+			0,height,0
 		] );
 		let uv = new Float32Array( [
 			0,0,
@@ -56,35 +86,6 @@ class Image {
 		geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
 		geometry.setAttribute( 'uv', new THREE.BufferAttribute( uv, 2 ) );
 		return geometry;
-	}
-	buildWeights(renderer){
-		let camera = new THREE.OrthographicCamera( 0, this.width(), this.height(), 0, -1, 1 );
-		let renderTarget = new THREE.WebGLRenderTarget(
-			this.width(),
-			this.height(),
-			{
-				format: THREE.RGBFormat,
-				depthBuffer: false
-			}
-		)
-		let material = new THREE.ShaderMaterial( {
-			uniforms: {
-				map: new THREE.Uniform(this.texture),
-				xpix: { value: 1/this.width() },
-				ypix: { value: 1/this.height() }
-			},
-			vertexShader: Image.weightVS,
-			fragmentShader: Image.weightFS
-		} );
-		let mesh = new THREE.Mesh( this.buildGeometry(), material );
-		let scene = new THREE.Scene();
-		scene.add(mesh);
-		renderer.setRenderTarget(renderTarget);
-		renderer.render(scene,camera);
-		renderer.setRenderTarget(null);
-		this.textureWeights = renderTarget.texture;
-		this.materialWeights = new THREE.MeshBasicMaterial( {map: this.textureWeights} );
-		this.meshWeights = new THREE.Mesh( this.buildGeometry(), this.materialWeights );
 	}
 	static weightVS = `
 		varying vec2 vUv;
