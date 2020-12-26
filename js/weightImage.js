@@ -12,7 +12,7 @@ class WeightImage extends Image {
 				xpix: { value: 1/this.width },
 				ypix: { value: 1/this.height }
 			},
-			vertexShader: WeightImage.VShader,
+			vertexShader: Image.VShader,
 			fragmentShader: WeightImage.FShader1
 		} );
 		mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), material );
@@ -26,7 +26,7 @@ class WeightImage extends Image {
 				xpix: { value: 1/this.width },
 				ypix: { value: 1/this.height }
 			},
-			vertexShader: WeightImage.VShader,
+			vertexShader: Image.VShader,
 			fragmentShader: WeightImage.FShader2
 		} );
 		mesh = new THREE.Mesh( Image.buildGeometry(1,1), material );
@@ -39,7 +39,7 @@ class WeightImage extends Image {
 				map: new THREE.Uniform(texture1),
 				delta: new THREE.Uniform(texture2),
 			},
-			vertexShader: WeightImage.VShader,
+			vertexShader: Image.VShader,
 			fragmentShader: WeightImage.FShader3
 		} );
 
@@ -48,15 +48,6 @@ class WeightImage extends Image {
 		scene.add(mesh);
 		this.setTexture( Image.createTexture( renderer, this.width, this.height, scene ) );
 	}
-	static VShader = `
-		varying vec2 vUv;
-
-		void main()	{
-			vUv = uv;
-
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-		}
-	`;
 	static FShader1 = `
 		uniform sampler2D map;
 		uniform float xpix;
@@ -132,11 +123,11 @@ class WeightImage extends Image {
 			while(i < 1.0){
 				j = ypix*0.5;
 				while(j < 1.0){
-					j += ypix;
 					temp = texture2D(map,vec2(i,j));
 					if(temp.x > maxDelta.x){maxDelta = temp.xxxx;}
 					if(temp.y > maxDelta.x){maxDelta = temp.yyyy;}
 					if(temp.z > maxDelta.x){maxDelta = temp.zzzz;}
+					j += ypix;
 				}
 				i += xpix;
 			}
