@@ -23,12 +23,13 @@ window.onload = function(){
 			image = new Image(texture);
 			image.translateX((image.width+5)*0+5);
 			image.translateY((image.height+5)*0+5);
-			scene.add(image.mesh);
+			scene.add(image);
 
-			image.buildWeights(renderer);
-			image.weights.translateX((image.width+5)*1+5);
-			image.weights.translateY((image.height+5)*0+5);
-			scene.add(image.weights.mesh);
+			weights = new WeightImage(image);
+			weights.render(renderer);
+			weights.translateX((image.width+5)*1+5);
+			weights.translateY((image.height+5)*0+5);
+			scene.add(weights);
 			
 			triangleImages.push(new TriangleImage(image.width,image.height));
 			triangleImages[0].addTriangle();
@@ -38,6 +39,7 @@ window.onload = function(){
 			triangleImages[0].addTriangle();
 			triangleImages[0].translateX((image.width+5)*2+5);
 			triangleImages[0].translateY((image.height+5)*0+5);
+			triangleImages[0].render(renderer);
 			scene.add(triangleImages[0]);
 		}
 	);
