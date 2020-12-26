@@ -4,19 +4,49 @@ class WeightImage extends Image {
 		this.source = image;
 	}
 	render(renderer){
-		let material = new THREE.ShaderMaterial( {
+		let material,mesh,scene,texture1,texture2;
+
+		material = new THREE.ShaderMaterial( {
 			uniforms: {
 				map: new THREE.Uniform(this.source.texture),
 				xpix: { value: 1/this.width },
 				ypix: { value: 1/this.height }
 			},
 			vertexShader: WeightImage.VShader,
-			fragmentShader: WeightImage.FShader
+			fragmentShader: WeightImage.FShader1
 		} );
-		let mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), material );
-		let scene = new THREE.Scene();
+		mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), material );
+		scene = new THREE.Scene();
 		scene.add(mesh);
-		this.setTexture( Image.createTexture( renderer, this.width, this.height, scene) );
+		texture1 = Image.createTexture( renderer, this.width, this.height, scene);
+
+		material = new THREE.ShaderMaterial( {
+			uniforms: {
+				map: new THREE.Uniform(texture1),
+				xpix: { value: 1/this.width },
+				ypix: { value: 1/this.height }
+			},
+			vertexShader: WeightImage.VShader,
+			fragmentShader: WeightImage.FShader2
+		} );
+		mesh = new THREE.Mesh( Image.buildGeometry(1,1), material );
+		scene = new THREE.Scene();
+		scene.add(mesh);
+		texture2 = Image.createTexture( renderer, 1, 1, scene);
+
+		material = new THREE.ShaderMaterial( {
+			uniforms: {
+				map: new THREE.Uniform(texture1),
+				delta: new THREE.Uniform(texture2),
+			},
+			vertexShader: WeightImage.VShader,
+			fragmentShader: WeightImage.FShader3
+		} );
+
+		mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), material );
+		scene = new THREE.Scene();
+		scene.add(mesh);
+		this.setTexture( Image.createTexture( renderer, this.width, this.height, scene ) );
 	}
 	static VShader = `
 		varying vec2 vUv;
@@ -27,7 +57,7 @@ class WeightImage extends Image {
 			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 		}
 	`;
-	static FShader = `
+	static FShader1 = `
 		uniform sampler2D map;
 		uniform float xpix;
 		uniform float ypix;
@@ -88,4 +118,41 @@ class WeightImage extends Image {
 			gl_FragColor = maxDelta;
 		}
 	`;
+	static FShader2 = `
+		uniform sampler2D map;
+		uniform float xpix;
+		uniform float ypix;
+
+		varying vec2 vUv;
+
+		void main()	{
+			vec4 maxDelta = vec4(0.0), temp;
+
+			float i = xpix*0.5, j;
+			while(i < 1.0){
+				j = ypix*0.5;
+				while(j < 1.0){
+					j += ypix;
+					temp = texture2D(map,vec2(i,j));
+					if(temp.x > maxDelta.x){maxDelta = temp.xxxx;}
+					if(temp.y > maxDelta.x){maxDelta = temp.yyyy;}
+					if(temp.z > maxDelta.x){maxDelta = temp.zzzz;}
+				}
+				i += xpix;
+			}
+			maxDelta.w = 1.0;
+			gl_FragColor = maxDelta;
+		}
+	`;
+	static FShader3 = `
+		uniform sampler2D map;
+		uniform sampler2D delta;
+
+		varying vec2 vUv;
+
+		void main()	{
+			gl_FragColor = texture2D(map,vUv) / texture2D(delta,vec2(0.5,0.5));
+		}
+	`;
 }
+

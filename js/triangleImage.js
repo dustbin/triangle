@@ -5,9 +5,13 @@ class TriangleImage extends Image {
 		this.triangleGroup = new THREE.Group();
 	}
 	addTriangle(){
-		let triangle = Triangle.randomTriangle(this.triangles.length,this.width,this.height);
+		let triangle = Triangle.randomTriangle();
+		triangle.scale.x = this.width;
+		triangle.scale.y = this.height;
+		triangle.position.z = -this.triangles.length;
+		triangle.updateMatrix();
 		this.triangles.push(triangle);
-		this.triangleGroup.add(triangle.mesh);
+		this.triangleGroup.add(triangle);
 	}
 	render(renderer){
 		let scene = new THREE.Scene();

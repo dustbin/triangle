@@ -37,6 +37,8 @@ window.onload = function(){
 			triangleImages[0].addTriangle();
 			triangleImages[0].addTriangle();
 			triangleImages[0].addTriangle();
+			triangleImages[0].addTriangle();
+			triangleImages[0].addTriangle();
 			triangleImages[0].translateX((image.width+5)*2+5);
 			triangleImages[0].translateY((image.height+5)*0+5);
 			triangleImages[0].render(renderer);
