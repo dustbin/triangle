@@ -42,7 +42,7 @@ class Image extends THREE.Object3D {
 		let renderTarget = Image.createRender(renderer,1,1,scene);
 		let result = new Uint8Array(4);
 		renderer.readRenderTargetPixels(renderTarget,0,0,1,1,result);
-		return (result[0]*result[0])+(result[1]*result[1])+(result[2]*result[2]);
+		return result[0]*0x1000000+result[1]*0x10000+result[2]*0x100+result[3];
 	}
 	static createTexture(renderer,width,height,scene){
 		return Image.createRender(renderer,width,height,scene).texture;
@@ -104,22 +104,27 @@ class Image extends THREE.Object3D {
 		varying vec2 vUv;
 
 		void main()	{
-			vec4 diff = vec4(0.0);
+			int diff = 0;
+			vec4 temp;
 			vec2 coord;
-			float count = 0.0;
 
 			float i = xpix*0.5, j;
 			while(i < 1.0){
 				j = ypix*0.5;
 				while(j < 1.0){
 					coord = vec2(i,j);
-					diff += abs(texture2D(map2,coord)-texture2D(map1,coord))*texture2D(mapw,coord);
-					count += 1.0;
+					temp = abs( texture2D(map2,coord) - texture2D(map1,coord) ) * (texture2D(mapw,coord)*0.5+0.5);
+					diff += int( floor( (temp.x+temp.y+temp.z)*1000.0/3.0 ) );
 					j += ypix;
 				}
 				i += xpix;
 			}
-			gl_FragColor = diff;
+			gl_FragColor = vec4(
+				float((diff/(256*256*256))%256)/255.0,
+				float((diff/(256*256))%256)/255.0,
+				float((diff/256)%256)/255.0,
+				float(diff%256)/255.0
+			);
 		}
 	`;
 }

@@ -45,7 +45,8 @@ window.onload = function(){
 			triangleImages[0].translateY((image.height+5)*0+5);
 			triangleImages[0].render(renderer);
 			scene.add(triangleImages[0]);
-			result = image.compare(triangleImages[0].texture,renderer);
+			result = image.compare(triangleImages[0],renderer);
+			console.log(result);
 		}
 	);
 
