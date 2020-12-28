@@ -1,6 +1,7 @@
 let camera, scene, renderer;
 let triangleImages = [];
 let image;
+let result;
 
 function resize(){
 }
@@ -30,6 +31,7 @@ window.onload = function(){
 			weights.translateX((image.width+5)*1+5);
 			weights.translateY((image.height+5)*0+5);
 			scene.add(weights);
+			image.setWeightTexture(weights.texture);
 			
 			triangleImages.push(new TriangleImage(image.width,image.height));
 			triangleImages[0].addTriangle();
@@ -43,6 +45,7 @@ window.onload = function(){
 			triangleImages[0].translateY((image.height+5)*0+5);
 			triangleImages[0].render(renderer);
 			scene.add(triangleImages[0]);
+			result = image.compare(triangleImages[0].texture,renderer);
 		}
 	);
 

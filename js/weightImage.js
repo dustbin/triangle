@@ -105,6 +105,7 @@ class WeightImage extends Image {
 				}
 			}
 
+			maxDelta.a = 1.0;
 
 			gl_FragColor = maxDelta;
 		}

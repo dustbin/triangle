@@ -21,10 +21,14 @@ class Image extends THREE.Object3D {
 		this.mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), this.material );
 		this.add(this.mesh);
 	}
+	setWeightTexture(weightTexture){
+		this.weightTexture = weightTexture;
+	}
 	compare(image, renderer){
 		let material = new THREE.ShaderMaterial( {
 			uniforms: {
 				map1: new THREE.Uniform(this.texture),
+				mapw: new THREE.Uniform(this.weightTexture),
 				map2: new THREE.Uniform(image.texture),
 				xpix: { value: 1/this.width },
 				ypix: { value: 1/this.height }
@@ -35,10 +39,10 @@ class Image extends THREE.Object3D {
 		let mesh = new THREE.Mesh( Image.buildGeometry(1,1), material );
 		let scene = new THREE.Scene();
 		scene.add(mesh);
-		let renderTarget = createRender(renderer,1,1,scene);
+		let renderTarget = Image.createRender(renderer,1,1,scene);
 		let result = new Uint8Array(4);
 		renderer.readRenderTargetPixels(renderTarget,0,0,1,1,result);
-		return result[0]*0x1000000+result[1]*0x10000+result[2]*0x100+result[3];
+		return (result[0]*result[0])+(result[1]*result[1])+(result[2]*result[2]);
 	}
 	static createTexture(renderer,width,height,scene){
 		return Image.createRender(renderer,width,height,scene).texture;
@@ -49,7 +53,6 @@ class Image extends THREE.Object3D {
 			width,
 			height,
 			{
-				format: THREE.RGBFormat,
 				depthBuffer: false
 			}
 		);
@@ -92,9 +95,9 @@ class Image extends THREE.Object3D {
 		}
 	`;
 	static FShaderCompare = `
-		uniform sampler2D source;
-		uniform sampler2D weight;
-		uniform sampler2D comp;
+		uniform sampler2D map1;
+		uniform sampler2D mapw;
+		uniform sampler2D map2;
 		uniform float xpix;
 		uniform float ypix;
 
@@ -103,15 +106,15 @@ class Image extends THREE.Object3D {
 		void main()	{
 			vec4 diff = vec4(0.0);
 			vec2 coord;
-			int count = 0;
+			float count = 0.0;
 
 			float i = xpix*0.5, j;
 			while(i < 1.0){
 				j = ypix*0.5;
 				while(j < 1.0){
 					coord = vec2(i,j);
-					diff += abs(texture2D(comp,coord)-texture2d(source,coord))*texture2d(weight,coord);
-					count += 1;
+					diff += abs(texture2D(map2,coord)-texture2D(map1,coord))*texture2D(mapw,coord);
+					count += 1.0;
 					j += ypix;
 				}
 				i += xpix;
