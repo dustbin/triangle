@@ -21,14 +21,14 @@ class Image extends THREE.Object3D {
 		this.mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), this.material );
 		this.add(this.mesh);
 	}
-	setWeightTexture(weightTexture){
-		this.weightTexture = weightTexture;
+	setWeight(weight){
+		this.weight = weight;
 	}
 	compare(image, renderer){
 		let material = new THREE.ShaderMaterial( {
 			uniforms: {
 				map1: new THREE.Uniform(this.texture),
-				mapw: new THREE.Uniform(this.weightTexture),
+				mapw: new THREE.Uniform(this.weight.texture),
 				map2: new THREE.Uniform(image.texture),
 				xpix: { value: 1/this.width },
 				ypix: { value: 1/this.height }
