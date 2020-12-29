@@ -37,21 +37,21 @@ class Triangle extends THREE.Mesh {
 			vertices[i] = temp;
 		}else if(rand<9){
 			let i = Math.floor(rand)-6;
-			let r = (color/0x10000)%0x100;
-			let g = (color/0x100)%0x100;
+			let r = Math.floor(color/0x10000)%0x100;
+			let g = Math.floor(color/0x100)%0x100;
 			let b = (color)%0x100;
 
 			let c;
 			if(i==0){c = r;}
-			else if(i==0){c = g;}
+			else if(i==1){c = g;}
 			else{c = b;}
 
-			c += Math.floor((Math.random()-0.5)*0.2*0x100);
+			c += Math.round((Math.random()-0.5)*0.2*0x100);
 			if(c>0xff){c=0xff;}
 			if(c<0x00){c=0x00;}
 
 			if(i==0){r = c;}
-			else if(i==0){g = c;}
+			else if(i==1){g = c;}
 			else{b = c;}
 
 			color = r*0x10000+g*0x100+b;

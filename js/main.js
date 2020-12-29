@@ -2,7 +2,6 @@ let camera, scene, renderer;
 let speciesCount = 3;
 let populationCount = 4;
 let species = [];
-let test = [];
 let image;
 let height, width;
 
@@ -11,6 +10,10 @@ function resize(){
 
 function render(){
 	requestAnimationFrame(render);
+	let test = species[0][0].clone();
+	test.addTriangle();
+	test.evaluate(image,renderer);
+	species[speciesCount]=[test];
 	let temp,t;
 	for(let s=0;s<speciesCount;++s){
 		temp = species[s][0];
@@ -21,11 +24,14 @@ function render(){
 			species[s].push(t);
 		}	
 		species[s].sort(TriangleImage.compare);
+	}
+	species.sort(function(a,b){return TriangleImage.compare(a[0],b[0]);});
+
+	for(let s=0;s<speciesCount;++s){
 		species[s][0].position.x = (image.width + 5) * (s+1) + 5;
 		species[s][0].position.y = height - image.height - 5;
 		scene.add(species[s][0]);
 	}
-	species.sort(function(a,b){TriangleImage.compare(a[0],b[0]);});
 
 	renderer.render(scene, camera);
 
@@ -58,16 +64,17 @@ window.onload = function(){
 			weights.render(renderer);
 			image.setWeight(weights);
 
-			for(let t,i=0;i<10;++i){
+			let t,test = [];
+			for(let i=0;i<speciesCount*3;++i){
 				t = new TriangleImage(image.width,image.height)
 				t.addTriangle();
 				t.evaluate(image,renderer);
 				test.push(t);
 			}
 			test.sort(TriangleImage.compare);
-			species[0] = [test[0]];
-			species[1] = [test[1]];
-			species[2] = [test[2]];
+			for(let s=0;s<speciesCount;++s){
+				species[s] = [test[s]];
+			}
 
 			render();
 		}
