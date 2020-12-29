@@ -18,11 +18,6 @@ class Triangle extends THREE.Mesh {
 		this.sourceColor = color;
 		this.sourceOpacity = opacity;
 	}
-	clone(){
-		let ret = new Triangle(Array.from(this.sourceVertices),this.sourceColor,this.sourceOpacity);
-		ret.applyMatrix4(this.matrix);
-		return ret;
-	}
 	mutatedCopy(){
 		let vertices = Array.from(this.sourceVertices);
 		let color = this.sourceColor;

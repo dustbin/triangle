@@ -1,6 +1,6 @@
 let camera, scene, renderer;
-let speciesCount = 3;
-let populationCount = 4;
+let speciesCount = 5;
+let populationCount = 10;
 let species = [];
 let image;
 let height, width;
@@ -10,7 +10,7 @@ function resize(){
 
 function render(){
 	requestAnimationFrame(render);
-	let test = species[0][0].clone();
+	let test = new TriangleImage(species[0][0]);
 	test.addTriangle();
 	test.evaluate(image,renderer);
 	species[speciesCount]=[test];

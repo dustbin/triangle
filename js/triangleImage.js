@@ -1,8 +1,17 @@
 class TriangleImage extends Image {
-	constructor(width,height){
+	constructor(width,height=null){
+		let source;
+		if(width instanceof TriangleImage){
+			source = width;
+			width = source.width;
+			height = source.height;
+		}
 		super(null,width,height);
-		this.triangles = [];
-		this.triangleGroup = new THREE.Group();
+		if(source){
+			this.triangles = Array.from(source.triangles);
+		}else{
+			this.triangles = [];
+		}
 		this.score = Number.POSITIVE_INFINITY;
 	}
 	addTriangle(){
@@ -11,11 +20,12 @@ class TriangleImage extends Image {
 		triangle.scale.y = this.height;
 		triangle.position.z = this.triangles.length-1000;
 		this.triangles.push(triangle);
-		this.triangleGroup.add(triangle);
 	}
 	render(renderer){
 		let scene = new THREE.Scene();
-		scene.add(this.triangleGroup);
+		for(let i in this.triangles){
+			scene.add(this.triangles[i]);
+		}
 		this.setTexture( Image.createTexture( renderer, this.width, this.height, scene) );
 	}
 	evaluate(image,renderer){
@@ -24,15 +34,6 @@ class TriangleImage extends Image {
 		}
 		this.score = image.compare(this,renderer);
 	}
-	clone(){
-		let temp,ret = new TriangleImage(this.width,this.height);
-		for(let i=0;i<this.triangles.length;++i){
-			temp = this.triangles[i].clone();
-			ret.triangles.push(temp);
-			ret.triangleGroup.add(temp);
-		}
-		return ret;
-	}
 	mutatedCopy(){
 		let rand,temp,ret = new TriangleImage(this.width,this.height);
 		rand = Math.floor(Math.random()*this.triangles.length);
@@ -40,10 +41,9 @@ class TriangleImage extends Image {
 			if(i==rand){
 				temp = this.triangles[i].mutatedCopy();
 			}else{
-				temp = this.triangles[i].clone();
+				temp = this.triangles[i];
 			}
 			ret.triangles.push(temp);
-			ret.triangleGroup.add(temp);
 		}
 		return ret;
 	}
