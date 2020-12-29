@@ -53,13 +53,7 @@ class Image extends THREE.Object3D {
 	}
 	static createRender(renderer,width,height,scene){
 		let camera = new THREE.OrthographicCamera( 0, width, height, 0, -1, 1000 );
-		let renderTarget = new THREE.WebGLRenderTarget(
-			width,
-			height,
-			{
-				depthBuffer: false
-			}
-		);
+		let renderTarget = TargetPool.getTarget(width,height);
 		renderer.setRenderTarget(renderTarget);
 		renderer.render(scene,camera);
 		renderer.setRenderTarget(null);
