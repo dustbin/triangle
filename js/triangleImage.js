@@ -24,13 +24,18 @@ class TriangleImage extends Image {
 		}
 		this.score = image.compare(this,renderer);
 	}
+	clone(){
+		let temp,ret = new TriangleImage(this.width,this.height);
+		for(let i=0;i<this.triangles.length;++i){
+			temp = this.triangles[i].clone();
+			ret.triangles.push(temp);
+			ret.triangleGroup.add(temp);
+		}
+		return ret;
+	}
 	mutatedCopy(){
 		let rand,temp,ret = new TriangleImage(this.width,this.height);
-		if(Math.random()*1000<1){
-			rand = -1;
-		}else{
-			rand = Math.floor(Math.random()*this.triangles.length);
-		}
+		rand = Math.floor(Math.random()*this.triangles.length);
 		for(let i=0;i<this.triangles.length;++i){
 			if(i==rand){
 				temp = this.triangles[i].mutatedCopy();
@@ -39,9 +44,6 @@ class TriangleImage extends Image {
 			}
 			ret.triangles.push(temp);
 			ret.triangleGroup.add(temp);
-		}
-		if(rand<0){
-			ret.addTriangle();
 		}
 		return ret;
 	}

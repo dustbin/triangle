@@ -27,18 +27,37 @@ class Triangle extends THREE.Mesh {
 		let vertices = Array.from(this.sourceVertices);
 		let color = this.sourceColor;
 		let opacity = this.sourceOpacity;
-		let r = Math.random()*10;
-		if(r<6){
-			let i = Math.floor(Math.random()*6);
-			r = (Math.random()-0.5)*0.2;
-			let temp = vertices[i] + r;
+		let rand = Math.random()*10;
+		if(rand<6){
+			let i = Math.floor(rand);
+			rand = (Math.random()-0.5)*0.2;
+			let temp = vertices[i] + rand;
 			if(temp<0){temp=0;}
 			else if(temp>1){temp=1;}
 			vertices[i] = temp;
-		}else if(r<9){
+		}else if(rand<9){
+			let i = Math.floor(rand)-6;
+			let r = (color/0x10000)%0x100;
+			let g = (color/0x100)%0x100;
+			let b = (color)%0x100;
+
+			let c;
+			if(i==0){c = r;}
+			else if(i==0){c = g;}
+			else{c = b;}
+
+			c += Math.floor((Math.random()-0.5)*0.2*0x100);
+			if(c>0xff){c=0xff;}
+			if(c<0x00){c=0x00;}
+
+			if(i==0){r = c;}
+			else if(i==0){g = c;}
+			else{b = c;}
+
+			color = r*0x10000+g*0x100+b;
 		}else{
-			r = (Math.random()-0.5)*0.5;
-			let temp = opacity + r*r*r;
+			rand = (Math.random()-0.5)*0.2;
+			let temp = opacity + rand;
 			if(temp<0){temp=0;}
 			else if(temp>1){temp=1;}
 			opacity = temp;

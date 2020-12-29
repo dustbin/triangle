@@ -1,54 +1,41 @@
 let camera, scene, renderer;
-let triangleImages = [];
+let speciesCount = 3;
+let populationCount = 4;
+let species = [];
+let test = [];
 let image;
-let result;
+let height, width;
 
 function resize(){
 }
 
 function render(){
 	requestAnimationFrame(render);
-
-	let t0 = triangleImages[0];
-	t0.position.x = (image.width+5)*1+5;
-	t0.position.y = 5;
-	let t1 = triangleImages[1];
-	t1.position.x = (image.width+5)*2+5;
-	t1.position.y = 5;
-	let t2 = triangleImages[2];
-	t2.position.x = (image.width+5)*3+5;
-	t2.position.y = 5;
-	scene.add(t0,t1,t2);
+	let temp,t;
+	for(let s=0;s<speciesCount;++s){
+		temp = species[s][0];
+		species[s] = [temp];
+		for(i=0;i<populationCount;++i){
+			t = temp.mutatedCopy();
+			t.evaluate(image,renderer);
+			species[s].push(t);
+		}	
+		species[s].sort(TriangleImage.compare);
+		species[s][0].position.x = (image.width + 5) * (s+1) + 5;
+		species[s][0].position.y = height - image.height - 5;
+		scene.add(species[s][0]);
+	}
+	species.sort(function(a,b){TriangleImage.compare(a[0],b[0]);});
 
 	renderer.render(scene, camera);
 
-	scene.remove(t0,t1,t2);
-
-	triangleImages = [t0,t1,t2];
-	let t,i;
-	for(i=0;i<3;++i){
-		t = t0.mutatedCopy();
-		t.addTriangle();
-		t.evaluate(image,renderer);
-		triangleImages.push(t);
+	for(let s=0;s<speciesCount;++s){
+		scene.remove(species[s][0]);
 	}
-	for(i=0;i<3;++i){
-		t = t1.mutatedCopy();
-		t.addTriangle();
-		t.evaluate(image,renderer);
-		triangleImages.push(t);
-	}
-	for(i=0;i<3;++i){
-		t = t2.mutatedCopy();
-		t.addTriangle();
-		t.evaluate(image,renderer);
-		triangleImages.push(t);
-	}
-	triangleImages.sort(TriangleImage.compare);
 }
 window.onload = function(){
-	let width = window.innerWidth;
-	let height = window.innerHeight;
+	width = window.innerWidth;
+	height = window.innerHeight;
 	camera = new THREE.OrthographicCamera( 0, width, height, 0, -1);
 
 	scene = new THREE.Scene();
@@ -63,8 +50,8 @@ window.onload = function(){
 		"test.jpg",
 		function(texture){
 			image = new Image(texture);
-			image.translateX((image.width+5)*0+5);
-			image.translateY((image.height+5)*0+5);
+			image.position.x = 5;
+			image.position.y = height - image.height - 5;
 			scene.add(image);
 
 			let weights = new WeightImage(image);
@@ -75,9 +62,12 @@ window.onload = function(){
 				t = new TriangleImage(image.width,image.height)
 				t.addTriangle();
 				t.evaluate(image,renderer);
-				triangleImages.push(t);
+				test.push(t);
 			}
-			triangleImages.sort(TriangleImage.compare);
+			test.sort(TriangleImage.compare);
+			species[0] = [test[0]];
+			species[1] = [test[1]];
+			species[2] = [test[2]];
 
 			render();
 		}
