@@ -48,12 +48,12 @@ class Image extends THREE.Object3D {
 		}
 		return ret;
 	}
-	static createTexture(renderer,width,height,scene){
-		return Image.createRender(renderer,width,height,scene).texture;
+	static createTexture(renderer,width,height,scene,unique=false){
+		return Image.createRender(renderer,width,height,scene,unique).texture;
 	}
-	static createRender(renderer,width,height,scene){
+	static createRender(renderer,width,height,scene,unique=false){
 		let camera = new THREE.OrthographicCamera( 0, width, height, 0, -1, 1000 );
-		let renderTarget = TargetPool.getTarget(width,height);
+		let renderTarget = TargetPool.getTarget(width,height,unique);
 		renderer.setRenderTarget(renderTarget);
 		renderer.render(scene,camera);
 		renderer.setRenderTarget(null);

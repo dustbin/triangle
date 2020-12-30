@@ -46,7 +46,7 @@ class WeightImage extends Image {
 		mesh = new THREE.Mesh( Image.buildGeometry(this.width,this.height), material );
 		scene = new THREE.Scene();
 		scene.add(mesh);
-		this.setTexture( Image.createTexture( renderer, this.width, this.height, scene ) );
+		this.setTexture( Image.createTexture( renderer, this.width, this.height, scene, true) );
 	}
 	static FShader1 = `
 		uniform sampler2D map;
