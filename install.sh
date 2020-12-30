@@ -5,7 +5,12 @@
 function install {
   set -x
 
+  if [[ ! -e $STATIC_DATA ]]; then
+    mkdir -p $STATIC_DATA
+  fi
+
   cp js/*.js $STATIC_DATA
+  cp lib/*.js $STATIC_DATA
   cp html/index.html $STATIC_DATA
   cp html/*.jpg $STATIC_DATA
 
@@ -15,6 +20,8 @@ function install {
 
   cp ./triangle.conf /etc/nginx/conf.d/
 
+  nginx -s reload
+
   set +x
 }
 
@@ -22,10 +29,10 @@ function update {
   set -x
 
   cp js/*.js $STATIC_DATA
+  cp lib/*.js $STATIC_DATA
   cp html/index.html $STATIC_DATA
   cp html/*.jpg $STATIC_DATA
 
-  nginx -s reload
   set +x
 }
 
