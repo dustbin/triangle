@@ -28,15 +28,16 @@ function render(){
 	species.sort(function(a,b){return TriangleImage.compare(a[0],b[0]);});
 
 	for(let s=0;s<speciesCount;++s){
-		species[s][0].position.x = (image.width + 5) * (s+1) + 5;
-		species[s][0].position.y = height - image.height - 5;
-		scene.add(species[s][0]);
+		species[s][0].updateGroup();
+		species[s][0].group.position.x = (image.width + 5) * (s+1) + 5;
+		species[s][0].group.position.y = height - image.height - 5;
+		scene.add(species[s][0].group);
 	}
 
 	renderer.render(scene, camera);
 
 	for(let s=0;s<speciesCount;++s){
-		scene.remove(species[s][0]);
+		scene.remove(species[s][0].group);
 	}
 }
 window.onload = function(){
@@ -72,8 +73,18 @@ window.onload = function(){
 				test.push(t);
 			}
 			test.sort(TriangleImage.compare);
+
+			let temp;
 			for(let s=0;s<speciesCount;++s){
 				species[s] = [test[s]];
+
+				temp = new Rectangle(0x000000,1);
+				temp.scale.x = image.width;
+				temp.scale.y = image.height;
+				temp.position.x = (image.width + 5) * (s+1) + 5;
+				temp.position.y = height - image.height - 5;
+				temp.position.z = -1001;
+				scene.add(temp);
 			}
 
 			render();

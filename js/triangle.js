@@ -1,5 +1,5 @@
 class Triangle extends THREE.Mesh {
-	constructor(vertices,color,opacity){
+	constructor(vertices,color,opacity,parent){
 		let geometry = new THREE.BufferGeometry();
 		geometry.setAttribute(
 			'position',
@@ -14,11 +14,22 @@ class Triangle extends THREE.Mesh {
 		);
 		let material = new THREE.MeshBasicMaterial( { color: color, opacity: opacity, transparent: true } );
 		super(geometry,material);
+		this.triParent = parent;
 		this.sourceVertices = vertices;
 		this.sourceColor = color;
 		this.sourceOpacity = opacity;
 	}
-	mutatedCopy(){
+	clone(parent){
+		let ret = new Triangle(
+			Array.from(this.sourceVertices),
+			this.sourceColor,
+			this.sourceOpacity,
+			parent
+		);
+		ret.applyMatrix4(this.matrix);
+		return ret;
+	}
+	mutatedCopy(parent){
 		let vertices = Array.from(this.sourceVertices);
 		let color = this.sourceColor;
 		let opacity = this.sourceOpacity;
@@ -57,15 +68,16 @@ class Triangle extends THREE.Mesh {
 			else if(temp>1){temp=1;}
 			opacity = temp;
 		}
-		let ret = new Triangle(Triangle.orientVertices(vertices),color,opacity);
+		let ret = new Triangle(Triangle.orientVertices(vertices),color,opacity,parent);
 		ret.applyMatrix4(this.matrix);
 		return ret;
 	}
-	static randomTriangle(){
+	static randomTriangle(parent){
 		return new Triangle(
 			Triangle.randomVertices(),
 			Triangle.randomColor(),
-			Math.random()
+			Math.random(),
+			parent
 		);
 	}
 	static randomVertices(){

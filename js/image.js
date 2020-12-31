@@ -7,9 +7,9 @@ class Image extends THREE.Object3D {
 			this.texture = null;
 			this.material = null;
 			this.mesh = null;
-			this.width = width;
-			this.height = height;
 		}
+		this.width ||= width;
+		this.height ||= height;
 	}
 	setTexture(texture){
 		this.texture = texture;
