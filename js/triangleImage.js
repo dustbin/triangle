@@ -51,7 +51,9 @@ class TriangleImage {
 			this.group = new THREE.Group();
 		}
 		for(let i in this.triangles){
-			if(this.triangles[i].triParent != this){this.triangles[i] = this.triangles[i].clone(this);}
+			if(this.triangles[i].parent && (this.triangles[i].parent != this.group)){
+				this.triangles[i] = this.triangles[i].clone(this);
+			}
 			this.group.add(this.triangles[i]);
 		}
 	}
