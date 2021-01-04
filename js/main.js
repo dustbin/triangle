@@ -54,7 +54,7 @@ window.onload = function(){
 	document.body.appendChild( renderer.domElement );
 
 	new THREE.TextureLoader().load(
-		"test.jpg",
+		"images/test.jpg",
 		function(texture){
 			image = new Image(texture);
 			image.position.x = 5;

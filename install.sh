@@ -5,8 +5,14 @@
 function install {
   set -x
 
-  if [[ ! -e $STATIC_DATA ]]; then
-    mkdir -p $STATIC_DATA
+  if [[ ! -e $STATIC_DATA/js ]]; then
+    mkdir -p $STATIC_DATA/js
+  fi
+  if [[ ! -e $STATIC_DATA/lib ]]; then
+    mkdir -p $STATIC_DATA/lib
+  fi
+  if [[ ! -e $STATIC_DATA/images ]]; then
+    mkdir -p $STATIC_DATA/images
   fi
 
   cp js/*.js $STATIC_DATA/js/
