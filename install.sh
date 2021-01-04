@@ -9,16 +9,16 @@ function install {
     mkdir -p $STATIC_DATA
   fi
 
-  cp js/*.js $STATIC_DATA
-  cp lib/*.js $STATIC_DATA
-  cp html/index.html $STATIC_DATA
-  cp html/*.jpg $STATIC_DATA
+  cp js/*.js $STATIC_DATA/js/
+  cp lib/*.js $STATIC_DATA/lib/
+  cp index.html $STATIC_DATA
+  cp images/*.jpg $STATIC_DATA/images/
 
   chown -R nginx: $STATIC_DATA
 
   chcon -Rt httpd_sys_content_t $STATIC_DATA
 
-  cp ./triangle.conf /etc/nginx/conf.d/
+  cp config/triangle.conf /etc/nginx/conf.d/
 
   nginx -s reload
 
@@ -28,10 +28,10 @@ function install {
 function update {
   set -x
 
-  cp js/*.js $STATIC_DATA
-  cp lib/*.js $STATIC_DATA
-  cp html/index.html $STATIC_DATA
-  cp html/*.jpg $STATIC_DATA
+  cp js/*.js $STATIC_DATA/js/
+  cp lib/*.js $STATIC_DATA/lib/
+  cp index.html $STATIC_DATA
+  cp images/*.jpg $STATIC_DATA/images/
 
   set +x
 }
