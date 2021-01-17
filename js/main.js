@@ -31,53 +31,49 @@ function render(){
 		scene.remove(species[s].group);
 	}
 }
-window.onload = function(){
-	width = window.innerWidth;
-	height = window.innerHeight;
+function onTextureLoad(texture){
+	image = new Image(texture);
+
+	width = (image.width+5)*speciesCount-5;
+	height = image.height;
+
 	camera = new THREE.OrthographicCamera( 0, width, height, 0, -1);
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xffffff );
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.setClearColor(0x000000,1);
-	document.body.appendChild( renderer.domElement );
+	renderer.setSize( width, height );
+	document.getElementById("canvas").appendChild( renderer.domElement );
 
-	new THREE.TextureLoader().load(
-		"images/test.jpg",
-		function(texture){
-			image = new Image(texture);
-			//image.position.x = 5;
-			//image.position.y = height - image.height - 5;
-			//scene.add(image);
+	let weights = new WeightImage(image);
+	weights.render(renderer);
+	image.setWeight(weights);
 
-			let weights = new WeightImage(image);
-			weights.render(renderer);
-			image.setWeight(weights);
+	let t;
+	for(let i=0;i<speciesCount*3;++i){
+		t = new TriangleImage(image.width,image.height)
+		t.addTriangle();
+		t.evaluate(image,renderer);
+		species.push(new Species(t,populationCount,image));
+	}
+	species.sort(Species.compare);
+	species = species.slice(0,speciesCount);
 
-			let t;
-			for(let i=0;i<speciesCount*3;++i){
-				t = new TriangleImage(image.width,image.height)
-				t.addTriangle();
-				t.evaluate(image,renderer);
-				species.push(new Species(t,populationCount,image));
-			}
-			species.sort(Species.compare);
-			species = species.slice(0,speciesCount);
+	let temp;
+	for(let s=0;s<speciesCount;++s){
+		temp = new Rectangle(0x000000,1);
+		temp.scale.x = image.width;
+		temp.scale.y = image.height;
+		temp.position.x = (image.width + 5) * s;
+		temp.position.y = height - image.height;
+		temp.position.z = -1001;
+		scene.add(temp);
+	}
 
-			let temp;
-			for(let s=0;s<speciesCount;++s){
-				temp = new Rectangle(0x000000,1);
-				temp.scale.x = image.width;
-				temp.scale.y = image.height;
-				temp.position.x = (image.width + 5) * s;
-				temp.position.y = height - image.height;
-				temp.position.z = -1001;
-				scene.add(temp);
-			}
-
-			render();
-		}
-	);
+	render();
+}
+window.onload = function(){
+	new THREE.TextureLoader().load( "images/test.jpg", onTextureLoad );
 };
