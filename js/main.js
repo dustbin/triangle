@@ -76,4 +76,7 @@ function onTextureLoad(texture){
 }
 window.onload = function(){
 	new THREE.TextureLoader().load( "images/test.jpg", onTextureLoad );
+	let img = document.createElement("img");
+	img.src = "images/test.jpg";
+	document.getElementById("menu").appendChild( img );
 };
