@@ -46,6 +46,7 @@ function onTextureLoad(texture){
 	renderer.setClearColor(0x000000,1);
 	renderer.setSize( width, height );
 	document.getElementById("canvas").appendChild( renderer.domElement );
+	Util.getStyle("#menu").setProperty("left",-image.width+"px");
 
 	let weights = new WeightImage(image);
 	weights.render(renderer);
