@@ -27,10 +27,16 @@ body {
 #canvas {
 	margin-left: 10px;
 }
+#file {
+	display: none;
+}
 		</style>
 	</head>
 	<body>
-		<div id="menu"></div>
+		<div id="menu">
+			<input type="file" id="file" accept="image/*" />
+			<div id="image"></div>
+		</div>
 		<div id="canvas"></div>
 	</body>
 </html>

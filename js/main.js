@@ -79,5 +79,28 @@ window.onload = function(){
 	new THREE.TextureLoader().load( "images/test.jpg", onTextureLoad );
 	let img = document.createElement("img");
 	img.src = "images/test.jpg";
-	document.getElementById("menu").appendChild( img );
+
+	let menuDiv = document.getElementById("menu");
+	let imgDiv = document.getElementById("image");
+	let fileInput = document.getElementById("file");
+
+	imgDiv.appendChild(img);
+
+	menuDiv.addEventListener("click", function(e){
+		fileInput.click();
+	});
+
+	fileInput.addEventListener("change", function(){
+		if(this.files.length>0){
+			imgDiv.removeChild(imgDiv.children[0]);
+
+			let imageURL = URL.createObjectURL(this.files[0]);
+
+			let img = document.createElement("img");
+			img.src = imageURL;
+			menuDiv.appendChild(img);
+
+			new THREE.TextureLoader().load( imageURL, onTextureLoad );
+		}
+	});
 };
