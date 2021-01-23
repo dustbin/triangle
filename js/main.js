@@ -106,7 +106,7 @@ window.onload = function(){
 
 			let img = document.createElement("img");
 			img.src = imageURL;
-			menuDiv.appendChild(img);
+			imgDiv.appendChild(img);
 
 			new THREE.TextureLoader().load( imageURL, onTextureLoad );
 		}
