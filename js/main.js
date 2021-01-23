@@ -1,7 +1,7 @@
 let camera, scene, renderer;
 let speciesCount = 5;
 let populationCount = 10;
-let species = [];
+let species;
 let image;
 let height, width;
 
@@ -45,13 +45,19 @@ function onTextureLoad(texture){
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 	renderer.setClearColor(0x000000,1);
 	renderer.setSize( width, height );
-	document.getElementById("canvas").appendChild( renderer.domElement );
+	let canvas = document.getElementById("canvas");
+	while(canvas.children.length>0){
+		canvas.removeChild(canvas.children[0]);
+	}
+	canvas.appendChild( renderer.domElement );
+
 	Util.getStyle("#menu").setProperty("left",-image.width+"px");
 
 	let weights = new WeightImage(image);
 	weights.render(renderer);
 	image.setWeight(weights);
 
+	species = [];
 	let t;
 	for(let i=0;i<speciesCount*3;++i){
 		t = new TriangleImage(image.width,image.height)
@@ -92,7 +98,9 @@ window.onload = function(){
 
 	fileInput.addEventListener("change", function(){
 		if(this.files.length>0){
-			imgDiv.removeChild(imgDiv.children[0]);
+			while(imgDiv.children.length>0){
+				imgDiv.removeChild(imgDiv.children[0]);
+			}
 
 			let imageURL = URL.createObjectURL(this.files[0]);
 
