@@ -1,22 +1,42 @@
 class Triangle extends THREE.Mesh {
 	constructor(vertices,color,opacity){
+		let f32a = new Float32Array( [
+			vertices[0],vertices[1],0,
+			vertices[2],vertices[3],0,
+			vertices[4],vertices[5],0
+		] )
 		let geometry = new THREE.BufferGeometry();
 		geometry.setAttribute(
 			'position',
-			new THREE.BufferAttribute(
-				new Float32Array( [
-					vertices[0],vertices[1],0,
-					vertices[2],vertices[3],0,
-					vertices[4],vertices[5],0
-				] ),
-				3
-			)
+			new THREE.BufferAttribute(f32a, 3)
 		);
 		let material = new THREE.MeshBasicMaterial( { color: color, opacity: opacity, transparent: true } );
 		super(geometry,material);
+		this.meshVertices = f32a;
+		this.meshMaterial = material;
 		this.sourceVertices = vertices;
 		this.sourceColor = color;
 		this.sourceOpacity = opacity;
+	}
+	setVertices(vertices){
+		this.meshVertices[0]=vertices[0];
+		this.meshVertices[1]=vertices[1];
+		this.meshVertices[3]=vertices[2];
+		this.meshVertices[4]=vertices[3];
+		this.meshVertices[6]=vertices[4];
+		this.meshVertices[7]=vertices[5];
+		this.sourceVertices = vertices;
+	}
+	setColor(color){
+		this.meshMaterial.color = color;
+		this.sourceColor = color;
+	}
+	setOpacity(opacity){
+		this.meshMaterial.opacity = opacity;
+		this.sourceOpacity = opacity;
+	}
+	resetMatrix(){
+		this.matrix.identity();
 	}
 	clone(){
 		let ret = new Triangle(
