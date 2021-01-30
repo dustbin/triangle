@@ -6,7 +6,6 @@ class TrianglePool{
 			triangle.setVertices(vertices);
 			triangle.setColor(color);
 			triangle.setOpacity(opacity);
-			triangle.resetMatrix();
 			return triangle;
 		}
 		return new Triangle(vertices,color,opacity);
@@ -27,7 +26,6 @@ class TrianglePool{
 			triangle.sourceColor,
 			triangle.sourceOpacity
 		);
-		ret.applyMatrix4(triangle.matrix);
 		return ret;
 	}
 	static getTriangleMutatedClone(triangle){
@@ -71,7 +69,6 @@ class TrianglePool{
 			opacity = temp;
 		}
 		let ret = TrianglePool.getTriangle(vertices,color,opacity);
-		ret.applyMatrix4(triangle.matrix);
 		return ret;
 	}
 }

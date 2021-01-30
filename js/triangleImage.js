@@ -12,8 +12,6 @@ class TriangleImage {
 	}
 	addTriangle(){
 		let triangle = TrianglePool.getRandomTriangle();
-		triangle.scale.x = this.width;
-		triangle.scale.y = this.height;
 		triangle.position.z = this.triangles.length-1000;
 		this.triangles.push(triangle);
 	}
@@ -43,6 +41,8 @@ class TriangleImage {
 	updateGroup(){
 		if(!this.group){
 			this.group = new THREE.Group();
+			this.group.scale.x = this.width;
+			this.group.scale.y = this.height;
 		}
 		for(let i in this.triangles){
 			this.group.add(this.triangles[i]);

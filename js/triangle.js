@@ -35,16 +35,12 @@ class Triangle extends THREE.Mesh {
 		this.meshMaterial.opacity = opacity;
 		this.sourceOpacity = opacity;
 	}
-	resetMatrix(){
-		this.matrix.identity();
-	}
 	clone(){
 		let ret = new Triangle(
 			Array.from(this.sourceVertices),
 			this.sourceColor,
 			this.sourceOpacity,
 		);
-		ret.applyMatrix4(this.matrix);
 		return ret;
 	}
 	static randomVertices(){
