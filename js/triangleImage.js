@@ -1,23 +1,17 @@
 class TriangleImage {
-	constructor(width,height=null){
-		let source;
-		if(width instanceof TriangleImage){
-			source = width;
-			this.width = source.width;
-			this.height = source.height;
-		}else{
-			this.width = width;
-			this.height = height;
-		}
-		if(source){
-			this.triangles = Array.from(source.triangles);
-		}else{
-			this.triangles = [];
-		}
+	constructor(width,height){
+		this.width = width;
+		this.height = height;
+		this.triangles = [];
 		this.score = Number.POSITIVE_INFINITY;
 	}
+	deconstructor(){
+		for(let i in this.triangles){
+			TrianglePool.addTriangle(this.triangles[i]);
+		}
+	}
 	addTriangle(){
-		let triangle = Triangle.randomTriangle(this);
+		let triangle = TrianglePool.getRandomTriangle();
 		triangle.scale.x = this.width;
 		triangle.scale.y = this.height;
 		triangle.position.z = this.triangles.length-1000;
@@ -38,9 +32,9 @@ class TriangleImage {
 		rand = Math.floor(Math.random()*this.triangles.length);
 		for(let i=0;i<this.triangles.length;++i){
 			if(i==rand){
-				temp = this.triangles[i].mutatedCopy(this);
+				temp = TrianglePool.getTriangleMutatedClone(this.triangles[i]);
 			}else{
-				temp = this.triangles[i];
+				temp = TrianglePool.getTriangleClone(this.triangles[i]);
 			}
 			ret.triangles.push(temp);
 		}
@@ -51,9 +45,6 @@ class TriangleImage {
 			this.group = new THREE.Group();
 		}
 		for(let i in this.triangles){
-			if(this.triangles[i].parent && (this.triangles[i].parent != this.group)){
-				this.triangles[i] = this.triangles[i].clone(this);
-			}
 			this.group.add(this.triangles[i]);
 		}
 	}

@@ -16,6 +16,9 @@ function render(){
 		species.push(species[s].mutate(renderer));
 	}
 	species.sort(Species.compare);
+	for(let i=speciesCount;i<species.length;++i){
+		species[i].deconstructor();
+	}
 	species = species.slice(0,speciesCount);
 
 	for(let s=0;s<speciesCount;++s){
@@ -66,6 +69,9 @@ function onTextureLoad(texture){
 		species.push(new Species(t,populationCount,image));
 	}
 	species.sort(Species.compare);
+	for(let i=speciesCount;i<species.length;++i){
+		species[i].deconstructor();
+	}
 	species = species.slice(0,speciesCount);
 
 	let temp;

@@ -4,6 +4,11 @@ class Species {
 		this.size = size;
 		this.image = image;
 	}
+	deconstructor(){
+		for(let i=0;i<this.species.length;++i){
+			this.species[i].deconstructor();
+		}
+	}
 	tick(renderer){
 		let t,temp = this.species[0];
 		this.species = [temp];
