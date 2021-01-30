@@ -3,7 +3,7 @@ class TrianglePool{
 	static getTriangle(vertices,color,opacity){
 		if(TrianglePool.pool.length>0){
 			let triangle = TrianglePool.pool.pop();
-			triangle.setVertices(vertices);
+			triangle.vertices = vertices;
 			triangle.color = color;
 			triangle.opacity = opacity;
 			return triangle;
@@ -22,14 +22,14 @@ class TrianglePool{
 	}
 	static getTriangleClone(triangle){
 		let ret = TrianglePool.getTriangle(
-			Array.from(triangle.sourceVertices),
+			Array.from(triangle.vertices),
 			triangle.color,
 			triangle.opacity
 		);
 		return ret;
 	}
 	static getTriangleMutatedClone(triangle){
-		let vertices = Array.from(triangle.sourceVertices);
+		let vertices = Array.from(triangle.vertices);
 		let color = triangle.color;
 		let opacity = triangle.opacity;
 

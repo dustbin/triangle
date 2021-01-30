@@ -5,12 +5,13 @@ class Triangle extends THREE.Mesh {
 			'position',
 			new THREE.BufferAttribute(Triangle.triangle,3)
 		);
-		let material = new THREE.MeshBasicMaterial( { color: color, opacity: opacity, transparent: true } );
-		super(geometry,material);
-		this.meshMaterial = material;
-		this.setVertices(vertices);
+		super(
+			geometry,
+			new THREE.MeshBasicMaterial( { color: color, opacity: opacity, transparent: true } )
+		)
+		this.vertices = vertices;
 	}
-	setVertices(vertices){
+	set vertices(vertices){
 		this.sourceVertices = vertices;
 		let matrix = new THREE.Matrix3().set(
 			vertices[0],vertices[2],vertices[4],
@@ -32,19 +33,21 @@ class Triangle extends THREE.Mesh {
 				0,0,0,1
 			)
 		);
-		
+	}
+	get vertices(){
+		return this.sourceVertices;
 	}
 	set color(color){
-		this.meshMaterial.color = color;
+		this.material.color.setHex(color);
 	}
 	get color(){
-		this.meshMaterial.color;
+		return this.material.color.getHex();
 	}
 	set opacity(opacity){
-		this.meshMaterial.opacity = opacity;
+		this.material.opacity = opacity;
 	}
 	get opacity(){
-		this.meshMaterial.opacity;
+		return this.material.opacity;
 	}
 	clone(){
 		let ret = new Triangle(
