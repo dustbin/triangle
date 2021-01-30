@@ -4,8 +4,8 @@ class TrianglePool{
 		if(TrianglePool.pool.length>0){
 			let triangle = TrianglePool.pool.pop();
 			triangle.setVertices(vertices);
-			triangle.setColor(color);
-			triangle.setOpacity(opacity);
+			triangle.color = color;
+			triangle.opacity = opacity;
 			return triangle;
 		}
 		return new Triangle(vertices,color,opacity);
@@ -23,15 +23,15 @@ class TrianglePool{
 	static getTriangleClone(triangle){
 		let ret = TrianglePool.getTriangle(
 			Array.from(triangle.sourceVertices),
-			triangle.sourceColor,
-			triangle.sourceOpacity
+			triangle.color,
+			triangle.opacity
 		);
 		return ret;
 	}
 	static getTriangleMutatedClone(triangle){
 		let vertices = Array.from(triangle.sourceVertices);
-		let color = triangle.sourceColor;
-		let opacity = triangle.sourceOpacity;
+		let color = triangle.color;
+		let opacity = triangle.opacity;
 
 		let rand = Math.random()*10;
 		if(rand<6){

@@ -1,45 +1,56 @@
 class Triangle extends THREE.Mesh {
 	constructor(vertices,color,opacity){
-		let f32a = new Float32Array( [
-			vertices[0],vertices[1],0,
-			vertices[2],vertices[3],0,
-			vertices[4],vertices[5],0
-		] )
 		let geometry = new THREE.BufferGeometry();
 		geometry.setAttribute(
 			'position',
-			new THREE.BufferAttribute(f32a, 3)
+			new THREE.BufferAttribute(Triangle.triangle,3)
 		);
 		let material = new THREE.MeshBasicMaterial( { color: color, opacity: opacity, transparent: true } );
 		super(geometry,material);
-		this.meshVertices = f32a;
 		this.meshMaterial = material;
-		this.sourceVertices = vertices;
-		this.sourceColor = color;
-		this.sourceOpacity = opacity;
+		this.setVertices(vertices);
 	}
 	setVertices(vertices){
-		this.meshVertices[0]=vertices[0];
-		this.meshVertices[1]=vertices[1];
-		this.meshVertices[3]=vertices[2];
-		this.meshVertices[4]=vertices[3];
-		this.meshVertices[6]=vertices[4];
-		this.meshVertices[7]=vertices[5];
 		this.sourceVertices = vertices;
+		let matrix = new THREE.Matrix3().set(
+			vertices[0],vertices[2],vertices[4],
+			vertices[1],vertices[3],vertices[5],
+			1,1,1
+		).multiply(Triangle.triangleMatrix);
+		let a = matrix.elements[0];
+		let c = matrix.elements[1];
+		let b = matrix.elements[3];
+		let d = matrix.elements[4];
+		let x = matrix.elements[6];
+		let y = matrix.elements[7];
+		this.matrix.identity();
+		this.applyMatrix4(
+			new THREE.Matrix4().set(
+				a,b,0,x,
+				c,d,0,y,
+				0,0,1,0,
+				0,0,0,1
+			)
+		);
+		
 	}
-	setColor(color){
+	set color(color){
 		this.meshMaterial.color = color;
-		this.sourceColor = color;
 	}
-	setOpacity(opacity){
+	get color(){
+		this.meshMaterial.color;
+	}
+	set opacity(opacity){
 		this.meshMaterial.opacity = opacity;
-		this.sourceOpacity = opacity;
+	}
+	get opacity(){
+		this.meshMaterial.opacity;
 	}
 	clone(){
 		let ret = new Triangle(
 			Array.from(this.sourceVertices),
-			this.sourceColor,
-			this.sourceOpacity,
+			this.color,
+			this.opacity,
 		);
 		return ret;
 	}
@@ -69,4 +80,14 @@ class Triangle extends THREE.Mesh {
 	static randomColor(){
 		return Math.floor(Math.random()*0x1000000);
 	}
+	static triangle = new Float32Array( [
+		0,0,0,
+		1,0,0,
+		1,1,0
+	] );
+	static triangleMatrix = new THREE.Matrix3().set(
+		0,1,1,
+		0,0,1,
+		1,1,1
+	).invert();
 }
