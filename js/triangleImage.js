@@ -2,6 +2,9 @@ class TriangleImage {
 	constructor(width,height){
 		this.width = width;
 		this.height = height;
+		this.group = new THREE.Group();
+		this.group.scale.x = this.width;
+		this.group.scale.y = this.height;
 		this.triangles = [];
 		this.score = Number.POSITIVE_INFINITY;
 	}
@@ -14,12 +17,13 @@ class TriangleImage {
 		let triangle = TrianglePool.getRandomTriangle();
 		triangle.position.z = this.triangles.length-1000;
 		this.triangles.push(triangle);
+		this.group.add(triangle);
 	}
 	render(renderer){
+		this.group.position.x = 0;
+		this.group.position.y = 0;
 		let scene = new THREE.Scene();
-		for(let i in this.triangles){
-			scene.add(this.triangles[i]);
-		}
+		scene.add(this.group);
 		return Image.createTexture( renderer, this.width, this.height, scene);
 	}
 	evaluate(image,renderer){
@@ -35,18 +39,9 @@ class TriangleImage {
 				temp = TrianglePool.getTriangleClone(this.triangles[i]);
 			}
 			ret.triangles.push(temp);
+			ret.group.add(temp);
 		}
 		return ret;
-	}
-	updateGroup(){
-		if(!this.group){
-			this.group = new THREE.Group();
-			this.group.scale.x = this.width;
-			this.group.scale.y = this.height;
-		}
-		for(let i in this.triangles){
-			this.group.add(this.triangles[i]);
-		}
 	}
 	static compare(a,b){
 		return a.score-b.score;

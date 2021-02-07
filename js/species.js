@@ -26,7 +26,6 @@ class Species {
 		return new Species(ret,this.size,this.image);
 	}
 	updateGroup(){
-		this.species[0].updateGroup();
 		this.group = this.species[0].group;
 	}
 
