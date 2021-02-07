@@ -10,6 +10,9 @@ class Species {
 		}
 	}
 	tick(renderer){
+		for(let i=1;i<this.species.length;++i){
+			this.species[i].deconstructor();
+		}
 		let t,temp = this.species[0];
 		this.species = [temp];
 		for(let i=0;i<this.size;++i){
@@ -20,7 +23,7 @@ class Species {
 		this.species.sort(TriangleImage.compare);
 	}
 	mutate(renderer){
-		let ret = new TriangleImage(this.species[0]);
+		let ret = this.species[0].clone();
 		ret.addTriangle();
 		ret.evaluate(this.image,renderer);
 		return new Species(ret,this.size,this.image);

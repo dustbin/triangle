@@ -29,6 +29,15 @@ class TriangleImage {
 	evaluate(image,renderer){
 		this.score = image.compare(new Image(this.render(renderer)),renderer);
 	}
+	clone(){
+		let temp,ret = new TriangleImage(this.width,this.height);
+		for(let i=0;i<this.triangles.length;++i){
+			temp = TrianglePool.getTriangleClone(this.triangles[i]);
+			ret.triangles.push(temp);
+			ret.group.add(temp);
+		}
+		return ret;
+	}
 	mutatedCopy(){
 		let rand,temp,ret = new TriangleImage(this.width,this.height);
 		rand = Math.floor(Math.random()*this.triangles.length);
