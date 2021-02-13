@@ -22,16 +22,15 @@ function render(){
 	species = species.slice(0,speciesCount);
 
 	for(let s=0;s<speciesCount;++s){
-		species[s].updateGroup();
-		species[s].group.position.x = (image.width + 5) * s;
-		species[s].group.position.y = height - image.height;
-		scene.add(species[s].group);
+		species[s].best().position.x = (image.width + 5) * s;
+		species[s].best().position.y = height - image.height;
+		scene.add(species[s].best());
 	}
 
 	renderer.render(scene, camera);
 
 	for(let s=0;s<speciesCount;++s){
-		scene.remove(species[s].group);
+		scene.remove(species[s].best());
 	}
 }
 function onTextureLoad(texture){
